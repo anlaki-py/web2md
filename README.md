@@ -30,7 +30,7 @@
 
 ## License
 
-This project is licensed under the [MIT License](LICENCE). Feel free to use, modify, and distribute it as per the terms of the license.
+This project is licensed under the [MIT License](LICENSE). Feel free to use, modify, and distribute it as per the terms of the license.
 
 ## Credits
 
