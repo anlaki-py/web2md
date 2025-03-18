@@ -1,0 +1,242 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web to Markdown Converter</title>
+    <!-- Add Highlight.js for code syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <!-- Add Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="icon.png">
+
+</head>
+<body>
+    <div class="background-gradient"></div>
+    
+    <button class="theme-toggle" id="themeToggle" title="Toggle dark/light mode">
+        <!-- Moon icon (for light mode) -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="moon-icon" viewBox="0 0 24 24">
+            <path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/>
+        </svg>
+        <!-- Sun icon (for dark mode, initially hidden) -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="sun-icon" viewBox="0 0 24 24" style="display: none;">
+            <path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0-2a7 7 0 1 1 0 14 7 7 0 0 1 0-14zm0-2a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0V4a1 1 0 0 1 1-1zm0 16a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0v-1a1 1 0 0 1 1-1zm8-9a1 1 0 0 1 1 1 1 1 0 1 1-2 0 1 1 0 0 1 1-1zM4 12a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm13.7-6.3a1 1 0 0 1 0 1.4l-.7.7a1 1 0 1 1-1.4-1.4l.7-.7a1 1 0 0 1 1.4 0zM7.4 17.6a1 1 0 1 1-1.4 1.4l-.7-.7a1 1 0 0 1 1.4-1.4l.7.7zM7.4 6.3a1 1 0 0 1-1.4 0l-.7-.7a1 1 0 0 1 1.4-1.4l.7.7a1 1 0 0 1 0 1.4zm10.5 10.6a1 1 0 0 1 0 1.4l-.7.7a1 1 0 1 1-1.4-1.4l.7-.7a1 1 0 0 1 1.4 0z"/>
+        </svg>
+    </button>
+    
+    <div class="app-wrapper">
+        <header class="app-header">
+            <h1 class="app-title">Web to Markdown</h1>
+            <p class="tagline">Transform any webpage into clean, structured Markdown with one click</p>
+        </header>
+        
+        <div class="container">
+            <div id="convertForm">
+                <div class="form-group">
+                    <label for="url">Enter webpage URL <span class="keyboard-shortcut"><span class="key">Alt</span>+<span class="key">U</span></span></label>
+                    <div class="input-group">
+                        <input type="text" id="url" name="url" placeholder="https://example.com" required>
+                        <button type="button" id="pasteButton" class="secondary-button" title="Paste from clipboard">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                            </svg>
+                            Paste
+                            <span class="keyboard-shortcut"><span class="key">Ctrl</span>+<span class="key">V</span></span>
+                        </button>
+                        <button type="button" id="clearButton" class="secondary-button" title="Clear input">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                            </svg>
+                            Clear
+                            <span class="keyboard-shortcut"><span class="key">Esc</span></span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="filter-section">
+                    <div class="filter-title" id="filterToggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                        <h3>Conversion Options</h3>
+                        <div class="tooltip">
+                            <div class="tooltip-icon">?</div>
+                            <span class="tooltip-text">Customize how your markdown is generated with these options. All filters are off by default.</span>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-options" id="filterOptions">
+                        <div class="filter-option">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="includeImages" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <label for="includeImages">Include Images</label>
+                        </div>
+                        
+                        <div class="filter-option">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="includeLinks" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <label for="includeLinks">Include Links</label>
+                        </div>
+                        
+                        <div class="filter-option">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="includeCodeBlocks" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <label for="includeCodeBlocks">Code Blocks</label>
+                        </div>
+                        
+                        <div class="filter-option">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="includeHeadings" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <label for="includeHeadings">Include Headings</label>
+                        </div>
+                        
+                        <div class="filter-option">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="includeTables" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <label for="includeTables">Include Tables</label>
+                        </div>
+                        
+                        <div class="filter-option">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="stripLineBreaks" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <label for="stripLineBreaks">Strip Extra Lines</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="buttons-container">
+                    <button type="button" id="convertBtn" title="Convert webpage to markdown">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 2v6h-6"></path>
+                            <path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
+                            <path d="M3 22v-6h6"></path>
+                            <path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
+                        </svg>
+                        Convert to Markdown
+                        <span class="keyboard-shortcut"><span class="key">Ctrl</span>+<span class="key">Enter</span></span>
+                    </button>
+                    
+                    <button type="button" id="showShortcutsBtn" class="secondary-button" title="Show keyboard shortcuts">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+                            <line x1="7" y1="9" x2="7" y2="9"></line>
+                            <line x1="12" y1="9" x2="12" y2="9"></line>
+                            <line x1="17" y1="9" x2="17" y2="9"></line>
+                            <line x1="7" y1="13" x2="17" y2="13"></line>
+                            <line x1="7" y1="17" x2="9" y2="17"></line>
+                            <line x1="12" y1="17" x2="14" y2="17"></line>
+                        </svg>
+                        Shortcuts
+                        <span class="keyboard-shortcut"><span class="key">?</span></span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="loading" id="loadingIndicator">
+                <div class="spinner"></div>
+                <p>Converting your webpage to beautiful Markdown...</p>
+            </div>
+            
+            <div class="error" id="errorMessage">
+                <p id="errorText"></p>
+            </div>
+        </div>
+        
+        <div class="container preview-container" id="previewContainer">
+            <div class="preview-header">
+                <h2 class="preview-title">Markdown Result</h2>
+                <div class="preview-actions">
+                    <button id="copyButton" class="secondary-button" title="Copy markdown to clipboard">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        Copy to Clipboard
+                        <span class="keyboard-shortcut"><span class="key">Ctrl</span>+<span class="key">C</span></span>
+                    </button>
+                    <button id="downloadButton" title="Download as .md file">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Download .md File
+                        <span class="keyboard-shortcut"><span class="key">Ctrl</span>+<span class="key">S</span></span>
+                    </button>
+                    <button id="newConversionBtn" class="secondary-button" title="Start a new conversion">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 12h18"></path>
+                            <path d="M12 3v18"></path>
+                        </svg>
+                        New Conversion
+                        <span class="keyboard-shortcut"><span class="key">Ctrl</span>+<span class="key">N</span></span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="tab-container">
+                <div class="tab-buttons">
+                    <button class="tab-button active" data-tab="raw">Raw Markdown</button>
+                    <button class="tab-button" data-tab="rendered">Rendered Preview</button>
+                </div>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="raw-tab">
+                        <textarea class="markdown-content" id="markdownContent" rows="15"></textarea>
+                    </div>
+                    <div class="tab-pane" id="rendered-tab">
+                        <div class="rendered-markdown" id="renderedMarkdown"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="success-message" id="copySuccess">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                Copied to clipboard successfully!
+            </div>
+        </div>
+    </div>
+    
+    <div class="shortcuts-container" id="shortcutsContainer">
+        <h4 style="margin-top: 0; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-color);">Keyboard Shortcuts</h4>
+        <ul class="shortcuts-list">
+            <li><span>Focus URL field</span> <span class="key">Alt</span>+<span class="key">U</span></li>
+            <li><span>Convert to Markdown</span> <span class="key">Ctrl</span>+<span class="key">Enter</span></li>
+            <li><span>Copy to clipboard</span> <span class="key">Ctrl</span>+<span class="key">C</span></li>
+            <li><span>Download .md file</span> <span class="key">Ctrl</span>+<span class="key">S</span></li>
+            <li><span>New conversion</span> <span class="key">Ctrl</span>+<span class="key">N</span></li>
+            <li><span>Clear input</span> <span class="key">Esc</span></li>
+            <li><span>Toggle dark mode</span> <span class="key">Shift</span>+<span class="key">D</span></li>
+        </ul>
+    </div>
+    
+    <footer class="footer">
+        <p>Powered by <a href="https://jina.ai" target="_blank">Jina.ai</a> | Designed with 💜 by Anlaki for markdown lovers</p>
+    </footer>
+    
+    <!-- Add required libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
