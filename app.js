@@ -241,6 +241,10 @@ document.addEventListener('DOMContentLoaded', () => {
         filterOptions.classList.toggle('collapsed');
     });
 
+    // Initially collapse filter options
+    filterToggle.classList.add('collapsed');
+    filterOptions.classList.add('collapsed');
+
     // --- Event Listeners ---
 
     // Paste Button
